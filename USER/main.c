@@ -12,50 +12,50 @@
 #include "Communication.h"
 
 
-//ÈÎÎñÓÅÏÈ¼¶
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define START_TASK_PRIO			1
-//ÈÎÎñ¶ÑÕ»´óĞ¡	
+//ä»»åŠ¡å †æ ˆå¤§å°	
 #define START_STK_SIZE 			256  
-//ÈÎÎñ¾ä±ú
+//ä»»åŠ¡å¥æŸ„
 TaskHandle_t StartTask_Handler;
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void start_task(void *pvParameters);
 
-//ÈÎÎñÓÅÏÈ¼¶
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define KEY_TASK_PRIO		2
-//ÈÎÎñ¶ÑÕ»´óĞ¡	
+//ä»»åŠ¡å †æ ˆå¤§å°	
 #define KEY_STK_SIZE 		128  
-//ÈÎÎñ¾ä±ú
+//ä»»åŠ¡å¥æŸ„
 TaskHandle_t KeyTask_Handler;
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void key_task(void *pvParameters);
 
-//ÈÎÎñÓÅÏÈ¼¶
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define TASK1_TASK_PRIO		3
-//ÈÎÎñ¶ÑÕ»´óĞ¡	
+//ä»»åŠ¡å †æ ˆå¤§å°	
 #define TASK1_STK_SIZE 		128  
-//ÈÎÎñ¾ä±ú
+//ä»»åŠ¡å¥æŸ„
 TaskHandle_t Task1Task_Handler;
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void task1_task(void *pvParameters);
 
-//ÈÎÎñÓÅÏÈ¼¶
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define PVM_TASK_PRIO		4
-//ÈÎÎñ¶ÑÕ»´óĞ¡	
+//ä»»åŠ¡å †æ ˆå¤§å°	
 #define PVM_STK_SIZE 		128  
-//ÈÎÎñ¾ä±ú
+//ä»»åŠ¡å¥æŸ„
 TaskHandle_t PVMTask_Handler;
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void pvm_task(void *pvParameters);
 
 #if PPM_control
-//ÈÎÎñÓÅÏÈ¼¶
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define PPM_TASK_PRIO		5
-//ÈÎÎñ¶ÑÕ»´óĞ¡	
+//ä»»åŠ¡å †æ ˆå¤§å°	
 #define PPM_STK_SIZE 		256  
-//ÈÎÎñ¾ä±ú
+//ä»»åŠ¡å¥æŸ„
 TaskHandle_t PPMTask_Handler;
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void ppm_task(void *pvParameters);
 #endif
 
@@ -65,51 +65,51 @@ float kddd;
 
 int32_t frist_angle = 0;
 int point_angle = 0;
-int32_t  angle_cnt;
-double point_pidout;
+int32_t  angle_cnt = 0;
+double point_pidout = 0;
 
 int main(void)
 {
-	 delay_init();	    	 //ÑÓÊ±º¯Êı³õÊ¼»¯	  
-	 NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//ÉèÖÃÖĞ¶ÏÓÅÏÈ¼¶·Ö×éÎª×é4     0~15Î»ÇÀÕ¼ÓÅÏÈ¼¶  Ã»ÓĞ×ÓÓÅÏÈ¼¶
-	 uart_init(115200);	 	//´®¿Ú³õÊ¼»¯Îª115200
-	 LED_Init();		  		//³õÊ¼»¯ÓëLEDÁ¬½ÓµÄÓ²¼ş½Ó¿Ú
-	 LCD_Init();			   	//³õÊ¼»¯LCD	
-	 KEY_Init();				  //°´¼ü³õÊ¼»¯		 	
+	 delay_init();	    	 //å»¶æ—¶å‡½æ•°åˆå§‹åŒ–	  
+	 NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//è®¾ç½®ä¸­æ–­ä¼˜å…ˆçº§åˆ†ç»„ä¸ºç»„4     0~15ä½æŠ¢å ä¼˜å…ˆçº§  æ²¡æœ‰å­ä¼˜å…ˆçº§
+	 uart_init(115200);	 	//ä¸²å£åˆå§‹åŒ–ä¸º115200
+	 LED_Init();		  		//åˆå§‹åŒ–ä¸LEDè¿æ¥çš„ç¡¬ä»¶æ¥å£
+	 LCD_Init();			   	//åˆå§‹åŒ–LCD	
+	 KEY_Init();				  //æŒ‰é”®åˆå§‹åŒ–		 	
    Control_Initialize(); 
-   CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,2,CAN_Mode_Normal);//CANÆÕÍ¨Ä£Ê½³õÊ¼»¯, ²¨ÌØÂÊ1MKbps 
-	 TIM3_Int_Init(15, 36000-1);   // 8msÖĞ¶ÏÒ»´Î
+   CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,2,CAN_Mode_Normal);//CANæ™®é€šæ¨¡å¼åˆå§‹åŒ–, æ³¢ç‰¹ç‡1MKbps 
+	 TIM3_Int_Init(15, 36000-1);   // 8msä¸­æ–­ä¸€æ¬¡
 	 ppm_pidinit();
-	//´´½¨¿ªÊ¼ÈÎÎñ
-    xTaskCreate((TaskFunction_t )start_task,            //ÈÎÎñº¯Êı
-                (const char*    )"start_task",          //ÈÎÎñÃû³Æ
-                (uint16_t       )START_STK_SIZE,        //ÈÎÎñ¶ÑÕ»´óĞ¡
-                (void*          )NULL,                  //´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                (UBaseType_t    )START_TASK_PRIO,       //ÈÎÎñÓÅÏÈ¼¶
-                (TaskHandle_t*  )&StartTask_Handler);   //ÈÎÎñ¾ä±ú              
-    vTaskStartScheduler();          //¿ªÆôÈÎÎñµ÷¶È
+	//åˆ›å»ºå¼€å§‹ä»»åŠ¡
+    xTaskCreate((TaskFunction_t )start_task,            //ä»»åŠ¡å‡½æ•°
+                (const char*    )"start_task",          //ä»»åŠ¡åç§°
+                (uint16_t       )START_STK_SIZE,        //ä»»åŠ¡å †æ ˆå¤§å°
+                (void*          )NULL,                  //ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                (UBaseType_t    )START_TASK_PRIO,       //ä»»åŠ¡ä¼˜å…ˆçº§
+                (TaskHandle_t*  )&StartTask_Handler);   //ä»»åŠ¡å¥æŸ„              
+    vTaskStartScheduler();          //å¼€å¯ä»»åŠ¡è°ƒåº¦
 }
 
-//¿ªÊ¼ÈÎÎñÈÎÎñº¯Êı
+//å¼€å§‹ä»»åŠ¡ä»»åŠ¡å‡½æ•°
 void start_task(void *pvParameters)
 {
-    taskENTER_CRITICAL();           //½øÈëÁÙ½çÇø
-    //´´½¨ÖĞ¶Ï²âÊÔÈÎÎñ
-	//´´½¨KEYÈÎÎñ
+    taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•ŒåŒº
+    //åˆ›å»ºä¸­æ–­æµ‹è¯•ä»»åŠ¡
+	//åˆ›å»ºKEYä»»åŠ¡
 	xTaskCreate((TaskFunction_t )key_task,             
                 (const char*    )"key_task",           
                 (uint16_t       )KEY_STK_SIZE,        
                 (void*          )NULL,                  
                 (UBaseType_t    )KEY_TASK_PRIO,        
                 (TaskHandle_t*  )&KeyTask_Handler);  
-   //´´½¨TASK1ÈÎÎñ
+   //åˆ›å»ºTASK1ä»»åŠ¡
   xTaskCreate((TaskFunction_t )task1_task,             
                 (const char*    )"task1_task",           
                 (uint16_t       )TASK1_STK_SIZE,        
                 (void*          )NULL,                  
                 (UBaseType_t    )TASK1_TASK_PRIO,        
                 (TaskHandle_t*  )&Task1Task_Handler);   							
-	//´´½¨ËÙ¶È»·ÈÎÎñ			
+	//åˆ›å»ºé€Ÿåº¦ç¯ä»»åŠ¡			
  	 xTaskCreate((TaskFunction_t )pvm_task,             
                 (const char*    )"pvm_task",           
                 (uint16_t       )PVM_STK_SIZE,        
@@ -117,7 +117,7 @@ void start_task(void *pvParameters)
                 (UBaseType_t    )PVM_TASK_PRIO,        
                 (TaskHandle_t*  )&PVMTask_Handler); 
  	#if PPM_control
-	//´´½¨½Ç¶È»·ÈÎÎñ	
+	//åˆ›å»ºè§’åº¦ç¯ä»»åŠ¡	
 	 xTaskCreate((TaskFunction_t )ppm_task,             
                 (const char*    )"ppm_task",           
                 (uint16_t       )PPM_STK_SIZE,        
@@ -125,54 +125,54 @@ void start_task(void *pvParameters)
                 (UBaseType_t    )PPM_TASK_PRIO,        
                 (TaskHandle_t*  )&PPMTask_Handler); 
   #endif								
-	vTaskDelete(StartTask_Handler); //É¾³ı¿ªÊ¼ÈÎÎñ
-    taskEXIT_CRITICAL();            //ÍË³öÁÙ½çÇø
+	vTaskDelete(StartTask_Handler); //åˆ é™¤å¼€å§‹ä»»åŠ¡
+    taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
 }
 
 
-//keyÈÎÎñº¯Êı
+//keyä»»åŠ¡å‡½æ•°
 void key_task(void *pvParameters)
 {
-	u8 key;
+	u8 key = 0;
 	while(1)
 	{
 		key=KEY_Scan(0);
 		switch(key)
 		{
 			case WKUP_PRES:
-       vTaskSuspend(Task1Task_Handler); //¹ÒÆğÈÎÎñ
+       vTaskSuspend(Task1Task_Handler); //æŒ‚èµ·ä»»åŠ¡
 				break;
 			case KEY1_PRES:
-       vTaskResume(PPMTask_Handler);	 //»Ö¸´ÈÎÎñ
+       vTaskResume(PPMTask_Handler);	 //æ¢å¤ä»»åŠ¡
 			  break;
 			case KEY0_PRES:
-				vTaskSuspend(PPMTask_Handler); //¹ÒÆğÈÎÎñ
-			  LED0=1;     //µÆÃğ
+				vTaskSuspend(PPMTask_Handler); //æŒ‚èµ·ä»»åŠ¡
+			  LED0=1;     //ç¯ç­
 				break;
 		}
-		vTaskDelay(10);			//ÑÓÊ±10ms 
+		vTaskDelay(10);			//å»¶æ—¶10ms 
 	}
 }
 
 
-//task1ÈÎÎñº¯Êı
+//task1ä»»åŠ¡å‡½æ•°
 void task1_task(void *pvParameters)
 {
 	u8 task1_num=0;
 	
 //	POINT_COLOR = BLACK;
 
-//	LCD_DrawRectangle(5,110,115,314); 	//»­Ò»¸ö¾ØĞÎ	
-//	LCD_DrawLine(5,130,115,130);		//»­Ïß
+//	LCD_DrawRectangle(5,110,115,314); 	//ç”»ä¸€ä¸ªçŸ©å½¢	
+//	LCD_DrawLine(5,130,115,130);		//ç”»çº¿
 	POINT_COLOR = MAGENTA;
 	LCD_ShowString(6,111,110,16,16,"Task1 Run:000");
 	while(1)
 	{
-		task1_num++;	//ÈÎÎñÖ´1ĞĞ´ÎÊı¼Ó1 ×¢Òâtask1_num1¼Óµ½255µÄÊ±ºò»áÇåÁã£¡£¡
+		task1_num++;	//ä»»åŠ¡æ‰§1è¡Œæ¬¡æ•°åŠ 1 æ³¨æ„task1_num1åŠ åˆ°255çš„æ—¶å€™ä¼šæ¸…é›¶ï¼ï¼
 //		LED0=!LED0;
-    printf("ÈÎÎñ1ÒÑ¾­Ö´ĞĞ£º%d´Î\r\n",task1_num);
-		LCD_ShowxNum(86,111,task1_num,3,16,0x80);	//ÏÔÊ¾ÈÎÎñÖ´ĞĞ´ÎÊı
-    vTaskDelay(1000);                           //ÑÓÊ±1s£¬Ò²¾ÍÊÇ1000¸öÊ±ÖÓ½ÚÅÄ	
+    printf("ä»»åŠ¡1å·²ç»æ‰§è¡Œï¼š%dæ¬¡\r\n",task1_num);
+		LCD_ShowxNum(86,111,task1_num,3,16,0x80);	//æ˜¾ç¤ºä»»åŠ¡æ‰§è¡Œæ¬¡æ•°
+    vTaskDelay(1000);                           //å»¶æ—¶1sï¼Œä¹Ÿå°±æ˜¯1000ä¸ªæ—¶é’ŸèŠ‚æ‹	
 	}
 }
 
@@ -202,7 +202,7 @@ void ppm_task(void *pvParameters)
 	 
 		while(1)
 	{	  
-		frist_angle = M3508[0].Angle;                 //¼Ç×¡³õÊ¼»úĞµ½Ç¶È
+		frist_angle = M3508[0].Angle;                 //è®°ä½åˆå§‹æœºæ¢°è§’åº¦
     LCD_ShowxNum(86,200,frist_angle,4,16,0x80);
 		if(frist_angle != 0) 
 		{			
@@ -213,15 +213,15 @@ void ppm_task(void *pvParameters)
 	 
 					 while(1)
 				 {	  
-	        LED0=0;	
-          PID_PPM_SetKp(kppp);
+	                                LED0=0;	
+                                        PID_PPM_SetKp(kppp);
 					PID_PPM_SetKi(kiii);
 					PID_PPM_SetKd(kddd);
-					angle_cnt = RM820R_Ang2Cnt(point_angle);            //¼ÆËãÄ¿±ê½Ç¶ÈµÄÂö³åÊı
-					point_pidout =  Motor_point_PID(angle_cnt,M3508[0].CNT_ABS);    //½Ç¶È»·PIDÊä³ö
-					Motor_Speed_Control((int32_t)point_pidout, 0);                  //ËÙ¶È»·£¬µç»ú0£¬IDºÅ 1
-					CAN_Send_Control_Value();                                       //CAN·¢ËÍµçÁ÷¿ØÖÆÊı¾İ
-					ANO_DT_Send_Senser();                                           //ÄäÃûµØÃæÕ¾
+					angle_cnt = RM820R_Ang2Cnt(point_angle);            //è®¡ç®—ç›®æ ‡è§’åº¦çš„è„‰å†²æ•°
+					point_pidout =  Motor_point_PID(angle_cnt,M3508[0].CNT_ABS);    //è§’åº¦ç¯PIDè¾“å‡º
+					Motor_Speed_Control((int32_t)point_pidout, 0);                  //é€Ÿåº¦ç¯ï¼Œç”µæœº0ï¼ŒIDå· 1
+					CAN_Send_Control_Value();                                       //CANå‘é€ç”µæµæ§åˆ¶æ•°æ®
+					ANO_DT_Send_Senser();                                           //åŒ¿ååœ°é¢ç«™
 					vTaskDelay(10); 
 				 } 
 }
@@ -237,46 +237,46 @@ void ppm_task(void *pvParameters)
 //	u8 canbuf[8] = {2,2,2,2,2,2,2,2};
 
 //	
-//	delay_init();	    	 //ÑÓÊ±º¯Êı³õÊ¼»¯	  
-//	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//ÉèÖÃÖĞ¶ÏÓÅÏÈ¼¶·Ö×éÎª×é2£º2Î»ÇÀÕ¼ÓÅÏÈ¼¶£¬2Î»ÏìÓ¦ÓÅÏÈ¼¶
-//	uart_init(115200);	 	//´®¿Ú³õÊ¼»¯Îª115200
-//	LED_Init();		  		//³õÊ¼»¯ÓëLEDÁ¬½ÓµÄÓ²¼ş½Ó¿Ú
-//	LCD_Init();			   	//³õÊ¼»¯LCD	
-//	KEY_Init();				  //°´¼ü³õÊ¼»¯		 	
+//	delay_init();	    	 //å»¶æ—¶å‡½æ•°åˆå§‹åŒ–	  
+//	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//è®¾ç½®ä¸­æ–­ä¼˜å…ˆçº§åˆ†ç»„ä¸ºç»„2ï¼š2ä½æŠ¢å ä¼˜å…ˆçº§ï¼Œ2ä½å“åº”ä¼˜å…ˆçº§
+//	uart_init(115200);	 	//ä¸²å£åˆå§‹åŒ–ä¸º115200
+//	LED_Init();		  		//åˆå§‹åŒ–ä¸LEDè¿æ¥çš„ç¡¬ä»¶æ¥å£
+//	LCD_Init();			   	//åˆå§‹åŒ–LCD	
+//	KEY_Init();				  //æŒ‰é”®åˆå§‹åŒ–		 	
 //  Control_Initialize(); 
-////	CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,2,CAN_Mode_LoopBack);//CAN³õÊ¼»¯»·»ØÄ£Ê½,²¨ÌØÂÊ500Kbps    
-//  CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,2,CAN_Mode_Normal);//CANÆÕÍ¨Ä£Ê½³õÊ¼»¯, ²¨ÌØÂÊ1MKbps 
-//	TIM3_Int_Init(15, 36000-1);   // 8msÖĞ¶ÏÒ»´Î
-// 	POINT_COLOR=RED;//ÉèÖÃ×ÖÌåÎªºìÉ« 
+////	CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,2,CAN_Mode_LoopBack);//CANåˆå§‹åŒ–ç¯å›æ¨¡å¼,æ³¢ç‰¹ç‡500Kbps    
+//  CAN_Mode_Init(CAN_SJW_1tq,CAN_BS2_8tq,CAN_BS1_9tq,2,CAN_Mode_Normal);//CANæ™®é€šæ¨¡å¼åˆå§‹åŒ–, æ³¢ç‰¹ç‡1MKbps 
+//	TIM3_Int_Init(15, 36000-1);   // 8msä¸­æ–­ä¸€æ¬¡
+// 	POINT_COLOR=RED;//è®¾ç½®å­—ä½“ä¸ºçº¢è‰² 
 //	LCD_ShowString(60,50,200,16,16,"WarShip STM32");	
 //	LCD_ShowString(60,70,200,16,16,"CAN TEST");	
 //	LCD_ShowString(60,90,200,16,16,"ATOM@ALIENTEK");
 //	LCD_ShowString(60,110,200,16,16,"2015/1/15");
 //	LCD_ShowString(60,130,200,16,16,"LoopBack Mode");	 
-//	LCD_ShowString(60,150,200,16,16,"KEY0:Send WK_UP:Mode");//ÏÔÊ¾ÌáÊ¾ĞÅÏ¢		
-//	POINT_COLOR=BLUE;//ÉèÖÃ×ÖÌåÎªÀ¶É«	  
-//	LCD_ShowString(60,170,200,16,16,"Count:");			//ÏÔÊ¾µ±Ç°¼ÆÊıÖµ	
-//	LCD_ShowString(60,190,200,16,16,"Send Data:");		//ÌáÊ¾·¢ËÍµÄÊı¾İ	
-//	LCD_ShowString(60,250,200,16,16,"Receive Data:");	//ÌáÊ¾½ÓÊÕµ½µÄÊı¾İ		
+//	LCD_ShowString(60,150,200,16,16,"KEY0:Send WK_UP:Mode");//æ˜¾ç¤ºæç¤ºä¿¡æ¯		
+//	POINT_COLOR=BLUE;//è®¾ç½®å­—ä½“ä¸ºè“è‰²	  
+//	LCD_ShowString(60,170,200,16,16,"Count:");			//æ˜¾ç¤ºå½“å‰è®¡æ•°å€¼	
+//	LCD_ShowString(60,190,200,16,16,"Send Data:");		//æç¤ºå‘é€çš„æ•°æ®	
+//	LCD_ShowString(60,250,200,16,16,"Receive Data:");	//æç¤ºæ¥æ”¶åˆ°çš„æ•°æ®		
 // 	while(1)
 //	{	   
 //		key=KEY_Scan(0);
-//		if(key==KEY0_PRES)//KEY0°´ÏÂ,·¢ËÍÒ»´ÎÊı¾İ
+//		if(key==KEY0_PRES)//KEY0æŒ‰ä¸‹,å‘é€ä¸€æ¬¡æ•°æ®
 //		{	 
 //		 res ++;
 ////		CAN1_SendMsg(canbuf , 8, 0x200);
 //		}
 //		M3508[0].PID.Goal_Speed = res;			
-//		POINT_COLOR=RED;//ÉèÖÃ×ÖÌåÎªºìÉ« 
+//		POINT_COLOR=RED;//è®¾ç½®å­—ä½“ä¸ºçº¢è‰² 
 //		LCD_ShowString(60,130,200,16,16,"Nnormal Mode ");	    
 //		key=Can_Receive_Msg(canbuf);
-//		if(key)//½ÓÊÕµ½ÓĞÊı¾İ
+//		if(key)//æ¥æ”¶åˆ°æœ‰æ•°æ®
 //		{			
-//			LCD_Fill(60,270,130,310,WHITE);//Çå³ıÖ®Ç°µÄÏÔÊ¾
+//			LCD_Fill(60,270,130,310,WHITE);//æ¸…é™¤ä¹‹å‰çš„æ˜¾ç¤º
 // 			for(i=0;i<key;i++)
 //			{									    
-//				if(i<4)LCD_ShowxNum(60+i*32,270,canbuf[i],3,16,0X80);	//ÏÔÊ¾Êı¾İ
-//				else LCD_ShowxNum(60+(i-4)*32,290,canbuf[i],3,16,0X80);	//ÏÔÊ¾Êı¾İ
+//				if(i<4)LCD_ShowxNum(60+i*32,270,canbuf[i],3,16,0X80);	//æ˜¾ç¤ºæ•°æ®
+//				else LCD_ShowxNum(60+(i-4)*32,290,canbuf[i],3,16,0X80);	//æ˜¾ç¤ºæ•°æ®
 // 			}
 //		}
 //   
